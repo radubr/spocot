@@ -15,18 +15,18 @@
 		width: 25%;
 		float: left;
 		}
-.se {
-  border: 5px solid rgba(232, 232, 232, 1);
-  background-color: rgba(232, 232, 232, 0.34);
-}
-.ae {
-  border: 5px solid rgba(77, 77, 77, 0.27);
-  background-color: rgba(232, 232, 232, 1);
-}
-.fix-fc {
-	  width: 15%;
-  display: inline-block;
-}
+		.se {
+		border: 5px solid rgba(232, 232, 232, 1);
+		background-color: rgba(232, 232, 232, 0.34);
+		}
+		.ae {
+		border: 5px solid rgba(77, 77, 77, 0.27);
+		background-color: rgba(232, 232, 232, 1);
+		}
+		.fix-fc {
+		width: 15%;
+		display: inline-block;
+		}
 		.container h2 {margin-top: 70px;}
 		.container p {
 			float: left;
@@ -89,7 +89,7 @@
 						<!-- <li><a href="#hash">Hash</a></li> -->
 						<!-- <li><a href="#dehash">Dehash</a></li> -->
 						<li><a id="modal-help" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
-						<li><a target="_blank" href="index.txt"><span class="glyphicon glyphicon-eye-open"></span> Source code</a></li>
+						<li><a target="_blank" href="https://github.com/radubr/crypto/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code</a></li>
 					</ul>
 				</div>
 			</div>
@@ -107,20 +107,19 @@
 			// $eKey2 = bin2hex($_POST["eKey"]);
 			$eCipher = $_POST["eCipher"];
 			// if ($_POST["eIV"] == ""){
-								// 	$_POST["eIV"] = $eIV;
+									// 	$_POST["eIV"] = $eIV;
 			// }
 			if (substr( $eCipher, 0, 3 ) === "aes"){
 				$eIV = mt_rand(1000000000000001, 9999999999999999);
 			} else if (substr( $eCipher, 0, 3 ) != "aes"){
 				$eIV = mt_rand(10000001, 99999999);
 			} else {$eIV = $_POST["eIV"];}
-
-		 	if (substr( $eCipher, -3 ) === "ecb" || substr( $eCipher, 0, 3 ) === "rc4" || substr( $eCipher, -3 ) === "ede" || substr( $eCipher, -3 ) === "de3"){
-			 	$eIV = "";
-			 	$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
-			 } else {
-			 	$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
-			 }
+			if (substr( $eCipher, -3 ) === "ecb" || substr( $eCipher, 0, 3 ) === "rc4" || substr( $eCipher, -3 ) === "ede" || substr( $eCipher, -3 ) === "de3"){
+				$eIV = "";
+				$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
+			} else {
+				$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
+			}
 			// checks if the key of algoritm   is bigger than 10 chars if not
 			// display error message and clear eCipherText
 			// if ( strlen($eKey) <= 10 ) {
@@ -192,7 +191,6 @@
 					<option <?php checkECipher("rc4-40") ?> value="rc4-40">rc4-40</option>
 				</select>
 				<span>IV (initialization vector): <input type="text" name="eIV" id="eIV" class="form-control fix-fc" value="<?php if (isset($eIV)) {echo htmlspecialchars($eIV); } else if (substr( $eCipher, -3 ) === "ecb") {echo ""; } ?>" disabled> <span id="chars-eIV"></span> chars</span>
-
 				<br>
 				<br>
 				<?php
@@ -233,7 +231,7 @@
 			$dPlainText = openssl_decrypt($dCipherText, $dCipher, $dKey, false, $dIV);
 			}
 			// if ($dPlainText == ""){
-											// 		$dPlainText = "The text could not be decrypted.";
+													// 		$dPlainText = "The text could not be decrypted.";
 			// }
 			if (isset($_POST["dCipherText"]) && mb_detect_encoding($dPlainText) == "UTF-8"){
 					$dPlainText = "The text could not be decrypted.";
@@ -430,72 +428,70 @@
 			<form action="index.php#dehash" method="post" accept-charset="utf-8">
 				<button type="submit" class="btn btn-warning">Reset</button>
 			</form> -->
-
 			<!-- Asymmetric Encryption -->
 			<!-- Generate  private & public key -->
 			<?php
-if (isset($_POST["generateKeys"])){
-	$generateKeys = $_POST["generateKeys"];
-$digest_alg = $_POST["digestAlg"];
-$config = array(
-"digest_alg" => "sha512",
-"private_key_bits" => 4096,
-"private_key_type" => OPENSSL_KEYTYPE_RSA,
-);
-
-// Create the private and public key
-$res = openssl_pkey_new($config);
-// $res = openssl_pkey_new();
-
-// Extract the private key from $res to $privKey
-openssl_pkey_export($res, $privKey);
-
-
-// Extract the public key from $res to $pubKey
-$pubKey = openssl_pkey_get_details($res);
-$pubKey = $pubKey["key"];
-
+			if (isset($_POST["generateKeys"])){
+			$generateKeys = $_POST["generateKeys"];
+			$digest_alg = $_POST["digestAlg"];
+			$keyBits = $_POST["keyBits"];
+			$config = array(
+			"digest_alg" => $digestAlg,
+			"private_key_bits" => $keyBits,
+			"private_key_type" => OPENSSL_KEYTYPE_RSA,
+			"encrypt_key" => true,
+			);
+			// Create the private and public key
+			$res = openssl_pkey_new($config);
+			// $res = openssl_pkey_new();
+			// Extract the private key from $res to $privKey
+			openssl_pkey_export($res, $privKey);
+			// Extract the public key from $res to $pubKey
+			$pubKey = openssl_pkey_get_details($res);
+			$pubKey = $pubKey["key"];
 			// generate unique filename to save the keys
 			$filePrivKey = uniqid(rand(), true);
 			$filePubKey = uniqid(rand(), true);
 			// save the keys in the unique files
 			file_put_contents("privKey$filePrivKey.txt",$privKey);
 			file_put_contents("pubKey$filePubKey.txt",$pubKey);
-}
-
-
-if (isset($_POST["aePlainData"])){
-$aePlainData = $_POST["aePlainData"];
-$data = $aePlainData;
-$pubKeyE = $_POST["pubKeyE"];
-$pubKey = $_POST["pubKeyE"];
-// Encrypt the data to $encrypted using the public key
-openssl_public_encrypt($data, $encrypted, $pubKey);
-}
-
-if (isset($_POST["ppdCipherText"])){
-$ppdCipherText = $_POST["ppdCipherText"];
-$encrypted = base64_decode($ppdCipherText);
-
-$ppdKey = $_POST["ppdKey"];
-$privKey = $ppdKey;
-
-openssl_private_decrypt($encrypted, $decrypted, $privKey);
-}
-
-?>
-<br>
-<br>
-<br>
-</div>
-<span id="AsymEncr"></span>
-					<div class="container ae">
+			}
+			if (isset($_POST["aePlainData"])){
+			$aePlainData = $_POST["aePlainData"];
+			$data = $aePlainData;
+			$pubKeyE = $_POST["pubKeyE"];
+			$pubKey = $_POST["pubKeyE"];
+			// Encrypt the data to $encrypted using the public key
+			openssl_public_encrypt($data, $encrypted, $pubKey);
+			}
+			if (isset($_POST["ppdCipherText"])){
+			$ppdCipherText = $_POST["ppdCipherText"];
+			$encrypted = base64_decode($ppdCipherText);
+			$ppdKey = $_POST["ppdKey"];
+			$privKey = $ppdKey;
+			openssl_private_decrypt($encrypted, $decrypted, $privKey);
+			}
+			?>
+			<br>
+			<br>
+			<br>
+		</div>
+		<span id="AsymEncr"></span>
+		<div class="container ae">
 			<h2><span class="third-color">A</span>symmetric Encryption</h2>
 			<form action="index.php#AsymEncr" method="post" accept-charset="utf-8">
 				<input type="hidden" name="generateKeys" id="generateKeys" value="yes">
-					<!-- <span>Select digest algorithm (method):</span> -->
-					<span>Using private key of 4096 bits, key type: OPENSSL_KEYTYPE_RSA and digest algorithm (method)::</span>
-			<?php function checkDigest_Alg($vDigest_Alg){global $digest_alg; if($digest_alg == $vDigest_Alg) {echo 'selected';} } ?>
+				<!-- <span>Select digest algorithm (method):</span> -->
+				<span>Using private key of
+				<?php function checkKeyBits($vKeyBit){global $keyBits; if($keyBits == $vKeyBit) {echo 'selected';} } ?>
+				<select class="form-inline form-control fix-fc" name="keyBits" id="keyBits">
+					<option <?php checkKeyBits("4096") ?> value="4096">4096</option>
+					<option <?php checkKeyBits("2048") ?> value="2048">2048</option>
+					<option <?php checkKeyBits("1024") ?> value="1024">1024</option>
+					<option <?php checkKeyBits("512") ?> value="512">512</option>
+				</select>
+				bits, key type: RSA and digest algorithm (method)::</span>
+				<?php function checkDigest_Alg($vDigest_Alg){global $digest_alg; if($digest_alg == $vDigest_Alg) {echo 'selected';} } ?>
 				<select class="form-inline form-control fix-fc" name="digestAlg">
 					<option <?php checkDigest_Alg("sha512") ?> value="sha512">sha512</option>
 					<option <?php checkDigest_Alg("sha384") ?> value="sha384">sha384</option>
@@ -507,9 +503,9 @@ openssl_private_decrypt($encrypted, $decrypted, $privKey);
 					<option <?php checkDigest_Alg("dss1") ?> value="dss1">dss1</option>
 					<option <?php checkDigest_Alg("mdc2") ?> value="mdc2">mdc2</option>
 					<option <?php checkDigest_Alg("ripemd160") ?> value="ripemd160">ripemd160</option>
-					</select>
-					<br>
-					<br>
+				</select>
+				<br>
+				<br>
 				<div class="block">
 					<p>Private key</p>
 					<textarea readonly name="pphPText" class="form-control" rows="3"><?php if (isset($generateKeys)) { echo $privKey; } ?></textarea>
@@ -575,13 +571,12 @@ openssl_private_decrypt($encrypted, $decrypted, $privKey);
 			<br>
 			<br>
 			<br>
-
 		</div>
-<?php
-// lets assume you just called an openssl function that failed
-while ($msg = openssl_error_string())
-    echo $msg . "<br />\n";
-?>
+		<?php
+		// lets assume you just called an openssl function that failed
+		while ($msg = openssl_error_string())
+		echo $msg . "<br />\n";
+		?>
 		<?php
 		$path = dirname(__FILE__);
 		if ($handle = opendir($path)) {
@@ -609,11 +604,11 @@ while ($msg = openssl_error_string())
 						18/05/2015 - displays the last used algorithm if is the case<br>
 						06/05/2015 - added asymmetric encryption and decryption<br>
 						28/04/2015 - added 44 hashing algorithms from Hash cryptography extension for PHP (<a href="http://php.net/manual/en/book.hash.php">documentation</a>)<br>
-						21/04/2015 - released version 1.2 tested successfully on Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.</p><br>
-						<!-- <p>Asymmetric signature/verification</p> -->
+					21/04/2015 - released version 1.2 tested successfully on Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.</p><br>
+					<!-- <p>Asymmetric signature/verification</p> -->
 					<strong>Possible updates:</strong><br>
 					use also the Mcrypt extension for PHP (slower than OpenSSL)
-					<a target="_blank" href="index.txt"><span class="glyphicon glyphicon-eye-open"></span> Source code of the project is avaiable here</a>
+					<a target="_blank" href="https://github.com/radubr/crypto/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code of the current project is avaiable at GitHub</a>
 					<p>Contact me: radu [at] proappsoft.com</p>
 				</div>
 				<div class="modal-footer">
