@@ -1,4 +1,4 @@
-# crypto
+# Crypto
 Crypto is a free online cryptographic service using PHP (OpenSSL cryptography extension).
 http://proappsoft.com/crypto/
 
