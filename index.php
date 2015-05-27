@@ -100,7 +100,7 @@
 			<!-- Symmetric Cryptography -->
 			<!-- Encipher -->
 			<!-- useful doc about openssl_encrypt http://thefsb.tumblr.com/post/110749271235/using-openssl-en-decrypt-in-php-instead-of -->
-			<?php	<!--
+			<?php
 			// for encrypting
 			if (isset($_POST["ePlainText"])){
 			$ePlainText = $_POST["ePlainText"];
@@ -119,7 +119,7 @@
 			$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
 			}
 			?>
-			<h2><span class="third-color"><i class="fa fa-connectdevelop"></i> S</span>ymmetric Cryptography</h2>
+		  <h2><span class="third-color"><i class="fa fa-connectdevelop"></i> S</span>ymmetric Cryptography</h2>
 			<h2 style="margin-top: 0;"><span class="first-color">E</span>ncipher</h2>
 			<!-- generates dropdown list of ciphers -->
 			<!-- http://jsfiddle.net/xp8u56eh/ -->
