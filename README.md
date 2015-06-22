@@ -1,7 +1,10 @@
-# Crypto
-Crypto is a free online cryptographic service using PHP (OpenSSL cryptography extension).
-https://gator1575.hostgator.com/~appsoft/crypto/
+# SPOCOT
 
+Secure PHP OpenSSL Crypto Online Tool - SPOCOT is a free online cryptographic service using PHP (OpenSSL cryptography extension).
+
+Select connection type:
+https://gator1575.hostgator.com/~appsoft/crypto/
+http://proappsoft.com/spocot/
 
 <strong>Update:</strong>
 
