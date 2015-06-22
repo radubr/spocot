@@ -3,9 +3,10 @@
 Secure PHP OpenSSL Crypto Online Tool - SPOCOT is a free online cryptographic service using PHP (OpenSSL cryptography extension).
 
 Select connection type:
-https://gator1575.hostgator.com/~appsoft/crypto/
 
-http://proappsoft.com/spocot/
+(SECURE)https://gator1575.hostgator.com/~appsoft/crypto/
+
+(NOT SECURE)http://proappsoft.com/spocot/
 
 View complete documentation and tutorial:
 https://drive.google.com/file/d/0B7bTrJgC76vpZFgtR1JRb3N6Qms/view?usp=sharing
