@@ -2,9 +2,12 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Crypto by Radu Braniscan</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <link rel="icon" href="favicon.ico" type="image/ico"/>
+		<title>Secure PHP OpenSSL Crypto Online Tool - SPOCOT</title>
+		<meta name="description" content="SPOCOT is a free online tool using PHP's cryptographic extension OpenSSL.">
+		<meta name="keywords" content="PHP, OpenSSL, online, tool, spocot, crypto">
+		<meta name="author" content="Radu Braniscan">
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+		<link rel="icon" href="favicon.ico" type="image/ico"/>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 		<style>
@@ -26,12 +29,12 @@
 		background-color: rgba(232, 232, 232, 1);
 		}
 		.fix-fc {
-		width: 15%;
+		width: auto;
 		display: inline-block;
 		}
 		.container h2 {margin-top: 70px;}
 		.container p {
-			float: left;
+		float: left;
 		margin-right: 20px;
 		}
 		.container button {
@@ -54,9 +57,7 @@
 		color: purple;
 		font-size: 200%;
 		}
-		#modal-help:hover{
-			cursor: pointer;
-		}
+		#modal-help:hover { cursor: pointer; }
 		.no-js #loader { display: none;  }
 		.js #loader { display: block; position: absolute; left: 100px; top: 0; }
 		.se-pre-con {
@@ -67,6 +68,9 @@
 		height: 100%;
 		z-index: 9999;
 		background: url(preloader-atom.gif) center no-repeat #fff;
+		}
+		.https {
+			color: green !important;
 		}
 		</style>
 	</head>
@@ -81,16 +85,15 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><i class="fa fa-unlock-alt"></i> CRYPTO by Radu Brănișcan</a>
+					<a class="navbar-brand" href="#"><i class="fa fa-key"></i> SPOCOT</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
-						<!-- <li class="encipher"><a href="#encipher">Encipher</a></li> -->
-						<!-- <li><a href="#decipher">Decipher</a></li> -->
-						<!-- <li><a href="#hash">Hash</a></li> -->
-						<!-- <li><a href="#dehash">Dehash</a></li> -->
 						<li><a id="modal-help" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
-						<li><a target="_blank" href="https://github.com/radubr/crypto/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code</a></li>
+						<li><a target="_blank" href="https://github.com/radubr/spocot/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code</a></li>
+						<li><a href="#">Select connection type: </a></li>
+						<li><a target="_self" href="https://gator1575.hostgator.com/~appsoft/spocot/" class="https"><i class="fa fa-lock"></i> HTTPS</a></li>
+						<li><a target="_self" href="http://proappsoft.com/spocot/"><span class="glyphicon glyphicon-file"></span> HTTP</a></li>
 					</ul>
 				</div>
 			</div>
@@ -103,10 +106,32 @@
 			<?php
 			// for encrypting
 			if (isset($_POST["ePlainText"])){
+			if (ctype_xdigit($_POST["ePlainText"])){
+				$ePT = true;
+				$_POST["ePlainText"] = hex2bin($_POST["ePlainText"]);
+			}
 			$ePlainText = $_POST["ePlainText"];
+			if (ctype_xdigit($_POST["eKey"])){
+				$eK = true;
+				$_POST["eKey"] = hex2bin($_POST["eKey"]);
+			}
+
 			$eKey = $_POST["eKey"];
-			// $eKey2 = bin2hex($_POST["eKey"]);
 			$eCipher = $_POST["eCipher"];
+
+			$ePad = $_POST["ePad"];
+			if ($ePad == "OPENSSL_RAW_DATA") {
+				$realePad = 1;
+			} else {$realePad = 0;}
+
+			$eIV = $_POST["eIV"];
+			if (ctype_digit($_POST["eIV"]) !== true){
+				if (ctype_xdigit($_POST["eIV"])){
+					$eI = true;
+					$eIV = hex2bin($_POST["eIV"]);
+				}
+			}
+			if (empty($_POST["eIV"])){
 			// matches the correct IV for the selected chipher
 			if (substr( $eCipher, 0, 3 ) === "aes" && substr( $eCipher, -3 ) != "ecb" ){
 				$eIV = mt_rand(1000000000000001, 9999999999999999);
@@ -115,16 +140,29 @@
 			} else {
 				$eIV = mt_rand(10000001, 99999999);
 			}
+		}
+
+
+
 			// encrypt function
-			$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, false, $eIV);
+			$eCipherText = openssl_encrypt($ePlainText, $eCipher, $eKey, $realePad, $eIV);
+			// for hex AES test vectors
+				if (($ePT == true) && ($eK == true)){
+					$eCipherText = bin2hex($eCipherText);
+					$eCT = true;
+					$ePlainText = bin2hex($ePlainText);
+					$eKey = bin2hex($eKey);
+					$eIV = bin2hex($eIV);
+				}
+
 			}
 			?>
-		  <h2><span class="third-color"><i class="fa fa-connectdevelop"></i> S</span>ymmetric Cryptography</h2>
+			<h2><span class="third-color"><i class="fa fa-connectdevelop"></i> S</span>ymmetric Cryptography</h2>
 			<h2 style="margin-top: 0;"><span class="first-color">E</span>ncipher</h2>
 			<!-- generates dropdown list of ciphers -->
 			<!-- http://jsfiddle.net/xp8u56eh/ -->
 			<form action="index.php#encipher" method="post" accept-charset="utf-8">
-				<span>Select cipher (algorithm):</span>
+				<span>Select cipher:</span>
 				<select class="form-inline form-control fix-fc" name="eCipher">
 					<!-- retrieve the last used algorithm if any -->
 					<?php function checkECipher($vECipher){global $eCipher; if($eCipher == $vECipher) {echo 'selected';} } ?>
@@ -182,30 +220,40 @@
 					<option <?php checkECipher("rc4") ?> value="rc4">rc4</option>
 					<option <?php checkECipher("rc4-40") ?> value="rc4-40">rc4-40</option>
 				</select>
-				<span>IV (initialization vector): <input type="text" name="eIV" id="eIV" class="form-control fix-fc" value="<?php if (isset($eIV)) {echo htmlspecialchars($eIV); } else if (substr( $eCipher, -3 ) === "ecb") {echo ""; } ?>" disabled> <span id="chars-eIV"></span> chars</span>
+				<span>IV (initialization vector): <input type="text" name="eIV" id="eIV" class="form-control fix-fc" value="<?php if (isset($eIV)) {echo htmlspecialchars($eIV); } else if (substr( $eCipher, -3 ) === "ecb") {echo ""; } ?>"> <span id="chars-eIV"></span> chars</span>
+				<span>- select padding:</span>
+					<select class="form-inline form-control fix-fc" name="ePad">
+						<!-- retrieve the last used algorithm if any -->
+						<?php function checkePad($vePad){global $ePad; if($ePad == $vePad) {echo 'selected';} } ?>
+						<option <?php checkePad("OPENSSL_RAW_DATA") ?> value="OPENSSL_RAW_DATA">OPENSSL_RAW_DATA</option>
+						<option <?php checkePad("OPENSSL_ZERO_PADDING") ?> value="OPENSSL_ZERO_PADDING">OPENSSL_ZERO_PADDING</option>
+					</select>
 				<br>
 				<br>
 				<span style="color: red;">
-				<?php
-				// display last openssl error message
-				while ($msg = openssl_error_string())
-				echo $msg . "<br />\n";
-				?>
+					<?php
+					// display last openssl error message
+					while ($msg = openssl_error_string())
+					echo $msg . "<br />\n";
+					?>
 				</span>
 				<div class="block">
 					<p>Plain text: </p>
 					<textarea required name="ePlainText" class="form-control" rows="3" cols="1" id="ePlainText"><?php if (isset($ePlainText)) {echo htmlspecialchars($ePlainText); } ?></textarea>
 					<span id="chars-ePlainText"></span> chars
+					<span class="code-type"> - code type: <?php if (isset($ePT)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<div class="block">
 					<p>Key: </p>
 					<textarea name="eKey" class="form-control" rows="3" id="eKey"><?php if (isset($eKey)) { echo htmlspecialchars($eKey); } ?></textarea>
 					<span id="chars-eKey"></span> chars
+					<span class="code-type"> - code type: <?php if (isset($eK)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<div class="block">
 					<p>Cipher text: </p>
 					<textarea readonly name="eCipherText" class="form-control res" rows="3" id="eCipherText"><?php if(isset($eCipherText)) { echo htmlspecialchars($eCipherText); } ?></textarea>
 					<span id="chars-eCipherText"></span> chars
+					<span class="code-type"> - code type: <?php if (isset($eCT)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<span id="decipher"></span>
 				<button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> Encipher</button>
@@ -217,12 +265,43 @@
 			<?php
 			//for decrypting
 			if (isset($_POST["dCipherText"])){
+
+			if (ctype_xdigit($_POST["dCipherText"])){
+				$dCT = true;
+				$_POST["dCipherText"] = hex2bin($_POST["dCipherText"]);
+			}
 			$dCipherText = $_POST["dCipherText"];
+
+			if (ctype_xdigit($_POST["dKey"])){
+				$dK = true;
+				$_POST["dKey"] = hex2bin($_POST["dKey"]);
+			}
 			$dKey = $_POST["dKey"];
 			$dCipher = $_POST["dCipher"];
+
 			$dIV = $_POST["dIV"];
+			if (ctype_digit($_POST["dIV"]) !== true){
+				if (ctype_xdigit($_POST["dIV"])){
+					$dI = true;
+					$dIV = hex2bin($_POST["dIV"]);
+				}
+			}
+
+			$dPad = $_POST["dPad"];
+			if ($dPad == "OPENSSL_RAW_DATA") {
+				$realdPad = 1;
+			} else {$realdPad = 0;}
 			// decrypt function
-			$dPlainText = openssl_decrypt($dCipherText, $dCipher, $dKey, false, $dIV);
+			$dPlainText = openssl_decrypt($dCipherText, $dCipher, $dKey, $realdPad, $dIV);
+				if (($dCT == true) && ($dK == true)){
+					$dPlainText = bin2hex($dPlainText);
+					$dPT = true;
+					$dCipherText = bin2hex($dCipherText);
+					$dKey = bin2hex($dKey);
+					$dIV = bin2hex($dIV);
+				}
+
+
 			}
 			if (isset($_POST["dCipherText"]) && mb_detect_encoding($dPlainText) == "UTF-8"){
 				// display error message
@@ -231,7 +310,7 @@
 			?>
 			<h2><span class="second-color">D</span>ecipher</h2>
 			<form action="index.php#deciph" method="post" accept-charset="utf-8">
-				<span>Select cipher (algorithm):</span>
+				<span>Select cipher:</span>
 				<select class="form-inline form-control fix-fc" name="dCipher">
 					<!-- retrieve the last used algorithm if any -->
 					<?php function checkDCipher($vDCipher){global $dCipher; if($dCipher == $vDCipher) {echo 'selected';} } ?>
@@ -290,19 +369,29 @@
 					<option <?php checkDCipher("rc4-40") ?> value="rc4-40">rc4-40</option>
 				</select>
 				<span>IV (initialization vector): <input type="text" name="dIV" id="dIV" class="form-control fix-fc" value="<?php if (isset($dIV)) {echo htmlspecialchars($dIV); } ?>"></span>
+				<span>- select padding:</span>
+					<select class="form-inline form-control fix-fc" name="dPad">
+						<!-- retrieve the last used algorithm if any -->
+						<?php function checkdPad($vdPad){global $dPad; if($dPad == $vdPad) {echo 'selected';} } ?>
+						<option <?php checkdPad("OPENSSL_RAW_DATA") ?> value="OPENSSL_RAW_DATA">OPENSSL_RAW_DATA</option>
+						<option <?php checkdPad("OPENSSL_ZERO_PADDING") ?> value="OPENSSL_ZERO_PADDING">OPENSSL_ZERO_PADDING</option>
+					</select>
 				<br>
 				<br>
 				<div class="block">
 					<p>Cipher text</p>
 					<textarea required name="dCipherText" class="form-control" rows="3"><?php if (isset($dCipherText)) { echo htmlspecialchars($dCipherText); } ?></textarea>
+					<span class="code-type"> - code type: <?php if (isset($dCT)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<div class="block">
 					<p>Key</p>
 					<textarea name="dKey" class="form-control" rows="3"><?php if (isset($dKey)) { echo htmlspecialchars($dKey); } ?></textarea>
+					<span class="code-type"> - code type: <?php if (isset($dK)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<div class="block">
 					<p>Plain text</p>
 					<textarea readonly name="dPlainText" class="form-control res" rows="3" cols="1"><?php if(isset($dPlainText)) { echo htmlspecialchars($dPlainText); } ?></textarea>
+					<span class="code-type"> - code type: <?php if (isset($dPT)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<button type="submit" class="btn btn-primary"><i class="fa fa-unlock"></i> Decipher</button>
 			</form>
@@ -346,14 +435,11 @@
 					<option <?php checkHAlgo("snefru") ?> value="snefru">snefru</option>
 					<option <?php checkHAlgo("snefru256") ?> value="snefru256">snefru256</option>
 					<option <?php checkHAlgo("gost") ?> value="gost">gost</option>
-					<!-- <option <?php checkHAlgo("gost-crypto") ?> value="gost-crypto">gost-crypto</option> -->
 					<option <?php checkHAlgo("adler32") ?> value="adler32">adler32</option>
 					<option <?php checkHAlgo("crc32") ?> value="crc32">crc32</option>
 					<option <?php checkHAlgo("crc32b") ?> value="crc32b">crc32b</option>
 					<option <?php checkHAlgo("fnv132") ?> value="fnv132">fnv132</option>
-					<!-- <option <?php checkHAlgo("fnv1a32") ?> value="fnv1a32">fnv1a32</option> -->
 					<option <?php checkHAlgo("fnv164") ?> value="fnv164">fnv164</option>
-					<!-- <option <?php checkHAlgo("fnv1a64") ?> value="fnv1a64">fnv1a64</option> -->
 					<option <?php checkHAlgo("joaat") ?> value="joaat">joaat</option>
 					<option <?php checkHAlgo("haval128,3") ?> value="haval128,3">haval128,3</option>
 					<option <?php checkHAlgo("haval160,3") ?> value="haval160,3">haval160,3</option>
@@ -400,7 +486,6 @@
 			// "private_key_type" => OPENSSL_KEYTYPE_RSA,
 			// "encrypt_key" => true
 			);
-
 			// Create the private and public key
 			$res = openssl_pkey_new($config);
 			// Extract the private key from $res to $privKey
@@ -439,7 +524,7 @@
 			<br>
 		</div>
 		<span id="AsymEncr"></span>
-		<div class="container action">
+		<div class="container ac">
 			<h2><span class="third-color"><i class="fa fa-diamond"></i> A</span>symmetric Cryptography</h2>
 			<form action="index.php#AsymEncr" method="post" accept-charset="utf-8">
 				<input type="hidden" name="generateKeys" id="generateKeys" value="yes">
@@ -506,8 +591,8 @@
 			</form>
 			<br>
 			<br>
-			<h3 id="ppKeys3" style="clear: both;"><span class="second-color"><i class="fa fa-unlock"></i> D</span>ecrypt</h3>
-			<form action="index.php#ppKeys3" method="post" accept-charset="utf-8">
+			<h3 id="AsymDecr" style="clear: both;"><span class="second-color"><i class="fa fa-unlock"></i> D</span>ecrypt</h3>
+			<form action="index.php#AsymDecr" method="post" accept-charset="utf-8">
 				<div class="block">
 					<p>Cipher text</p>
 					<textarea required name="ppdCipherText" class="form-control" rows="3" id="ppdCipherText"><?php if (isset($ppdCipherText)) {echo htmlspecialchars($ppdCipherText); }?></textarea>
@@ -522,7 +607,7 @@
 				</div>
 				<button type="submit" class="btn btn-primary">Decrypt</button>
 			</form>
-			<form action="index.php#ppKeys3" method="post" accept-charset="utf-8">
+			<form action="index.php#AsymDecr" method="post" accept-charset="utf-8">
 				<button type="submit" class="btn btn-warning">Reset</button>
 			</form>
 			<br>
@@ -534,11 +619,11 @@
 			<br>
 		</div>
 		<span style="display: none;">
-		<?php
-		// Display last openssl error message
-		while ($msg = openssl_error_string())
-		echo $msg . "<br />\n";
-		?>
+			<?php
+			// Display last openssl error message
+			while ($msg = openssl_error_string())
+			echo $msg . "<br />\n";
+			?>
 		</span>
 		<?php
 		// Deleted the txt files with keys after 60 seconds also there is a cron job that runs this file every 1 minute
@@ -562,21 +647,22 @@
 						<h4 class="modal-title" id="myModalLabel">Help</h4>
 					</div>
 					<div class="modal-body">
-						<p>Crypto is a free online cryptographic service (symmetric and asymmetric cryptography). It uses the OpenSSL/1.0.1c cryptography extension for PHP/5.4.7. (<a href="http://php.net/manual/en/book.openssl.php">documentation</a> and <a href="https://github.com/php/php-src/tree/master/ext/openssl">source code</a>)<br>
+						<p>Secure PHP OpenSSL Crypto Online Tool - SPOCOT is a free cryptographic service (symmetric and asymmetric cryptography). It uses the OpenSSL/1.0.1c cryptography extension for PHP/5.4.7. (<a href="http://php.net/manual/en/book.openssl.php">documentation</a> and <a href="https://github.com/php/php-src/tree/master/ext/openssl">source code</a>)<br>
 						<br>
 						<strong>Updates log:</strong><br>
+						01/06/2015 - secure connection via a shared server certificate <br>
 						25/05/2015 - added preloader<br>
 						18/05/2015 - displays the last used algorithm if is the case<br>
 						06/05/2015 - added asymmetric cryptography (generate prrivate &amp; public key, encryption &amp; decryption)<br>
-						28/04/2015 - added 44 hashing algorithms from Hash cryptography extension for PHP (<a href="http://php.net/manual/en/book.hash.php">documentation</a>)<br>
-					  21/04/2015 - released version 1.2 tested successfully on Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.</p><br>
-					<!-- <p>Asymmetric signature/verification</p> -->
-					<strong>Possible updates:</strong><br>
-					use also the Mcrypt extension for PHP (slower than OpenSSL)
+						28/04/2015 - added 43 hashing algorithms from Hash cryptography extension for PHP (<a href="http://php.net/manual/en/book.hash.php">documentation</a>)<br>
+						21/04/2015 - released version 1.2 tested successfully on Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.</p><br>
 					<br>
+					<strong><a target="_blank" href="https://docs.google.com/document/d/1TinPZH5Fj32nEZMAygscRxwAVVBozTqEgVwfS8K0Duc/edit?usp=sharing"><span class="glyphicon glyphicon-question-sign"></span> View complete documentation and tutorial</a></strong><br>
+
+					<a target="_blank" href="https://github.com/radubr/spocot/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code of the current project is available at GitHub</a>
+
 					<hr>
-					<a target="_blank" href="https://github.com/radubr/crypto/blob/master/index.php"><span class="glyphicon glyphicon-eye-open"></span> Source code of the current project is available at GitHub</a>
-					<p>Contact me: radu [at] proappsoft.com</p>
+					<p>Contact: radu [at] proappsoft.com</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
