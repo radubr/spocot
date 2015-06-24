@@ -8,7 +8,7 @@ Secure PHP OpenSSL Crypto Online Tool - SPOCOT is a free cryptographic service (
 
 (NOT SECURE) http://proappsoft.com/spocot/
 
-<strong>How to:</strong><a href="https://docs.google.com/document/d/1TinPZH5Fj32nEZMAygscRxwAVVBozTqEgVwfS8K0Duc/edit?usp=sharing">View complete documentation and tutorial</a>
+<strong>How to: </strong><a href="https://docs.google.com/document/d/1TinPZH5Fj32nEZMAygscRxwAVVBozTqEgVwfS8K0Duc/edit?usp=sharing">View complete documentation and tutorial</a>
 
 
 <strong>Updates log:</strong>
