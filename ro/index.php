@@ -4,10 +4,10 @@
 		<meta caractereet="UTF-8">
 		<title>Instrument online securizat de criptografie PHP OpenSSL - SPOCOT</title>
 		<meta name="description" content="SPOCOT este un instrument gratuit de criptografie care foloseste OpenSSL, extensia criptografica pentru PHP.">
-		<meta name="Cheiawords" content="PHP, OpenSSL, online, instrument, spocot, crypto">
+		<meta name="keywords" content="PHP, OpenSSL, online, instrument, spocot, crypto">
 		<meta name="author" content="Radu Braniscan">
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-		<link rel="icon" href="favicon.ico" type="image/ico"/>
+		<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
+		<link rel="icon" href="./favicon.ico" type="image/ico"/>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 		<style>
@@ -87,7 +87,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><i class="fa fa-Cheia"></i> SPOCOT</a>
+					<a class="navbar-brand" href="#"><i class="fa fa-key"></i> SPOCOT</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
@@ -97,7 +97,7 @@
 						<li><a target="_self" href="https://gator1575.hostgator.com/~appsoft/spocot/ro" class="https"><i class="fa fa-lock"></i> HTTPS</a></li>
 						<li><a target="_self" href="http://proappsoft.com/spocot/ro"><span class="glyphicon glyphicon-file"></span> HTTP</a></li>
 						<li><a href="#">Schimba in limba: </a></li>
-						<li><a target="_self" href="http://proappsoft.com/spocot/ro"><span class="glyphicon glyphicon-globe"></span> Engleza / English</a></li>
+						<li><a target="_self" href="http://proappsoft.com/spocot/"><span class="glyphicon glyphicon-globe"></span> Engleza / English</a></li>
 					</ul>
 				</div>
 			</div>
@@ -285,11 +285,11 @@
 			}
 			$dCipherText = $_POST["dCipherText"];
 
-			if (ctype_xdigit($_POST["dCheia"])){
+			if (ctype_xdigit($_POST["dKey"])){
 				$dK = true;
-				$_POST["dCheia"] = hex2bin($_POST["dCheia"]);
+				$_POST["dKey"] = hex2bin($_POST["dKey"]);
 			}
-			$dCheia = $_POST["dCheia"];
+			$dKey = $_POST["dKey"];
 			$dCipher = $_POST["dCipher"];
 
 			$dIV = $_POST["dIV"];
@@ -305,12 +305,12 @@
 				$realdPad = 1;
 			} else {$realdPad = 0;}
 			// functia de decriptare
-			$dPlainText = openssl_decrypt($dCipherText, $dCipher, $dCheia, $realdPad, $dIV);
+			$dPlainText = openssl_decrypt($dCipherText, $dCipher, $dKey, $realdPad, $dIV);
 				if (($dCT == true) && ($dK == true)){
 					$dPlainText = bin2hex($dPlainText);
 					$dPT = true;
 					$dCipherText = bin2hex($dCipherText);
-					$dCheia = bin2hex($dCheia);
+					$dKey = bin2hex($dKey);
 					$dIV = bin2hex($dIV);
 				}
 
@@ -398,7 +398,7 @@
 				</div>
 				<div class="block">
 					<p>Cheia</p>
-					<textarea name="dCheia" class="form-control" rows="3"><?php if (isset($dCheia)) { echo htmlspecialchars($dCheia); } ?></textarea>
+					<textarea name="dKey" class="form-control" rows="3"><?php if (isset($dKey)) { echo htmlspecialchars($dKey); } ?></textarea>
 					<span class="code-type"> - codare: <?php if (isset($dK)) {echo "hex"; } else {echo "txt"; } ?></span>
 				</div>
 				<div class="block">
@@ -490,8 +490,8 @@
 			if (isset($_POST["generateKeys"])){
 			$generateKeys = $_POST["generateKeys"];
 			$digestAlg = $_POST["digestAlg"];
-			$CheiaBits = $_POST["CheiaBits"];
-			settype($CheiaBits, "int");
+			$KeyBits = $_POST["KeyBits"];
+			settype($KeyBits, "int");
 			settype($digestAlg, "string");
 			$config = array(
 			"digest_alg" => $digestAlg,
@@ -659,7 +659,10 @@
 					</div>
 					<div class="modal-body">
 						<p>SPOCOT este un instrument online securizat de criptografie PHP OpenSSL. Acest serviciu gratuit de criptofrafices (simetrica si asimetrica) foloseste extensia criptografica OpenSSL/1.0.1c pentru PHP/5.4.7.(<a href="http://php.net/manual/en/book.openssl.php">documentatie</a> si <a href="https://github.com/php/php-src/tree/master/ext/openssl">codul sursa</a>)<br>
-						SPOCOT este acronimul de la Secure PHP OpenSSL Crypto Online Tool.Aplicatia a fost testat cu success pe un server Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.
+						<br>
+						<br>
+						SPOCOT este acronimul de la Secure PHP OpenSSL Crypto Online Tool. Aplicatia a fost testat cu success pe un server Apache/2.4.3 (Win32) OpenSSL/1.0.1c PHP/5.4.7.
+					<br>
 					<br>
 					<strong><a target="_blank" href="https://docs.google.com/document/d/1TinPZH5Fj32nEZMAygscRxwAVVBozTqEgVwfS8K0Duc/edit?usp=sharing"><span class="glyphicon glyphicon-question-sign"></span> Vezi documentatia completa si tutorial</a></strong><br>
 
